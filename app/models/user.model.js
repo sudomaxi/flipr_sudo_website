@@ -9,7 +9,8 @@ const User = mongoose.model(
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role"
-    }
+    },
+    interests: [String]
   })
 );
 
