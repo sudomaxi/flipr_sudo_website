@@ -19,7 +19,7 @@ module.exports = (app) => {
   app.get("/api/podcasts", [
     middleware.verifyToken
   ], controller.getPodcastsByPopularity);
-  app.get("/api/podcasts/search", controller.searchByName);
+  app.get("/api/podcasts/search", controller.searchByNameOrTag);
   app.delete("/api/podcast/:id", [
     middleware.verifyToken
   ], controller.deletePodcast);

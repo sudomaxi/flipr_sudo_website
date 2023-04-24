@@ -11,7 +11,7 @@ exports.addPodcast = async (req, res) => {
     watchTime: 0,
     likes: [],
     views: [],
-    tags: req.body.tags,
+    tags: String(req.body.tags).split(','),
     uploaded: Date.now(),
     duration: parseInt(req.body.duration),
     path: req.body.path,
@@ -30,9 +30,21 @@ exports.addPodcast = async (req, res) => {
   });
 };
 
-exports.searchByName = async (req, res) => {
+exports.searchByNameOrTag = async (req, res) => {
   await Podcast.find({
-    tags: {$in: [req.body.tag]}
+    title: {
+      $regex: `.*${req.body.title}.*`
+    },
+    tags: {
+      $in: [
+        ...String(req.body.tags).split(',')
+      ]
+    }
+  }).populate({
+    path: 'view',
+    match: {
+      user: req.body.user
+    }
   }).then((podacasts) => {
     return res.status(200).send({
       podcasts: podacasts,
