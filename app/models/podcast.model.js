@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Podcast = mongoose.model(
   "Podcast",
   new mongoose.Schema({
-    path: String,
+    podcast: String,
     type: String,
     title: String,
     description: String,
@@ -15,6 +15,7 @@ const Podcast = mongoose.model(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     }],
+    thumbnail: String,
     tags: [String],
     views: [{
       type: mongoose.Schema.Types.ObjectId,

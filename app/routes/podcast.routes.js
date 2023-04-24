@@ -10,6 +10,9 @@ module.exports = (app) => {
     );
     next();
   });
+  app.get("/api/podcast/:id", [
+    middleware.verifyToken
+  ], controller.getPodcast);
   app.post(
     "/api/podcast", [
     middleware.verifyToken,
@@ -23,4 +26,6 @@ module.exports = (app) => {
   app.delete("/api/podcast/:id", [
     middleware.verifyToken
   ], controller.deletePodcast);
+  app.post("/api/podcast/like", controller.toggleLike);
+  app.get("/api/podcasts/like/:id", controller.getLikedPodcastsOfUser);
 };

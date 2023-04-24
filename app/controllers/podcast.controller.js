@@ -1,5 +1,6 @@
 const db = require("../models");
 const Podcast = require("../models/podcast.model");
+const User = require("../models/user.model");
 
 exports.addPodcast = async (req, res) => {
   console.log(req.body);
@@ -11,10 +12,11 @@ exports.addPodcast = async (req, res) => {
     watchTime: 0,
     likes: [],
     views: [],
-    tags: String(req.body.tags).split(','),
+    tags: ["all", ...String(req.body.tags).split(",")],
     uploaded: Date.now(),
     duration: parseInt(req.body.duration),
-    path: req.body.path,
+    podcast: req.body.podcast,
+    thumbnail: req.body.thumbnail,
   });
   await podcast.save().then((podcast, err) => {
     if (err) {
@@ -30,26 +32,73 @@ exports.addPodcast = async (req, res) => {
   });
 };
 
+exports.getPodcast = async (req, res) => {
+  await Podcast.findById(req.params.id).populate({
+    
+  }).then();
+}
+
+exports.toggleLike = async (req, res) => {
+  await Podcast.findById(req.body.podcast).then(async (podcast) => {
+    if (!podcast) {
+      return res.status(400).send({
+        result: "Podcast not found",
+      });
+    }
+    if (!podcast.likes.includes(req.body.user)) {
+      await Podcast.updateOne(
+        { _id: Object(req.body.podcast) },
+        { $push: { likes: Object(req.body.user) } }
+      ).then((result) => {
+        return res.status(200).send({
+          result: "success",
+        });
+      });
+    } else {
+      await Podcast.updateOne(
+        { _id: Object(req.body.podcast) },
+        { $pull: { likes: Object(req.body.user) } }
+      ).then((result) => {
+        return res.status(200).send({
+          result: "success",
+        });
+      });
+    }
+  });
+};
+
+exports.getLikedPodcastsOfUser = async (req, res) => {
+  await Podcast.find({
+    likes: {
+      $in: [req.params.id]
+    }
+  }).then(podcasts => {
+    return res.status(200).send({
+      result: podcasts
+    });
+  });
+}
+
 exports.searchByNameOrTag = async (req, res) => {
   await Podcast.find({
     title: {
-      $regex: `.*${req.body.title}.*`
+      $regex: `.*${req.body.title}.*`,
     },
     tags: {
-      $in: [
-        ...String(req.body.tags).split(',')
-      ]
-    }
-  }).populate({
-    path: 'views',
-    match: {
-      user: req.body.user
-    }
-  }).then((podacasts) => {
-    return res.status(200).send({
-      podcasts: podacasts,
+      $in: [...String(req.body.tags).split(",")],
+    },
+  })
+    .populate({
+      path: "views",
+      match: {
+        user: req.body.user,
+      },
+    })
+    .then((podacasts) => {
+      return res.status(200).send({
+        podcasts: podacasts,
+      });
     });
-  });
 };
 
 exports.getPodcasts = async (req, res) => {

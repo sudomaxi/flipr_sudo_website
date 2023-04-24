@@ -9,19 +9,7 @@ const User = mongoose.model(
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role"
-    },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Podcast"
-      }
-    ],
-    views: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "View"
-      }
-    ]
+    }
   })
 );
 

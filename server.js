@@ -5,8 +5,12 @@ const app = express();
 
 require("dotenv").config();
 
-app.use(express.static('uploads'));
-app.use(cors());
+app.use(express.static('storage'));
+app.use(cors({
+  corsOption: {
+    origin: '*'
+  }
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(busboy({
