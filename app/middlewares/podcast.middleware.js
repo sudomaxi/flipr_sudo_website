@@ -17,7 +17,7 @@ exports.uploadFile = async (req, res, next) => {
   req.pipe(req.busboy);
   let fileUrl;
   let thumbnailUrl;
-  req.busboy.on("files", (fieldname, file, info) => {
+  req.busboy.on("file", (fieldname, file, info) => {
     console.log(`Uploading ${info.filename}`);
     let randomFileName = uuid.v1() + "." + getFileExt(info.filename);
     let filePath;
