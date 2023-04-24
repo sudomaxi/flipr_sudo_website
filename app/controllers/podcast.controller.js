@@ -41,7 +41,7 @@ exports.searchByNameOrTag = async (req, res) => {
       ]
     }
   }).populate({
-    path: 'view',
+    path: 'views',
     match: {
       user: req.body.user
     }

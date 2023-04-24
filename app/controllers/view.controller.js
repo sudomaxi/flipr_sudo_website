@@ -44,34 +44,34 @@ exports.markView = async (req, res) => {
             });
           }
           return res.status(200).send({
-            view: view,
-            podcast: rsp,
+            view: view
+          });
+        });
+      });
+    } else {
+      await View.updateOne(
+        { _id: result._id },
+        { lastWatched: req.body.lastWatched }
+      ).then(async (view) => {
+        Podcast.updateOne(
+          {
+            _id: result.podcast,
+            views: { $ne: result._id },
+          },
+          {
+            $addToSet: { views: result._id },
+          }
+        ).exec((err, resp) => {
+          if (err) {
+            return res.status(500).send({
+              result: "Something went wrong",
+            });
+          }
+          return res.status(200).send({
+            view: result,
           });
         });
       });
     }
-    await View.updateOne(
-      { _id: result._id },
-      { lastWatched: req.body.lastWatched }
-    ).then(async (view) => {
-      Podcast.updateOne(
-        {
-          _id: result.podcast,
-          views: { $ne: result._id },
-        },
-        {
-          $addToSet: { views: result._id },
-        }
-      ).exec((err, resp) => {
-        if (err) {
-          return res.status(500).send({
-            result: "Something went wrong",
-          });
-        }
-        return res.status(200).send({
-          view: result,
-        });
-      });
-    });
   });
 };
