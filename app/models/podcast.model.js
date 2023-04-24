@@ -17,6 +17,7 @@ const Podcast = mongoose.model(
     }],
     thumbnail: String,
     tags: [String],
+    additionalTags: [String],
     views: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'View'

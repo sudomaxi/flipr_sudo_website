@@ -2,6 +2,7 @@ const db = require("../models/index");
 const View = require("../models/view.model");
 const User = require("../models/user.model");
 const Podcast = require("../models/podcast.model");
+const { parseTags } = require("../services/recommendation.services");
 
 exports.getPodcastsViewedByUser = async (req, res) => {
   await View.find({
@@ -75,3 +76,19 @@ exports.markView = async (req, res) => {
     }
   });
 };
+
+exports.addTagAndUserInterest = async (req, res) => {
+  await User.updateOne(
+    { _id: Object(req.body.user) },
+    {$addToSet: {interests: {$each: parseTags(req.body.query)}}}
+  ).then(async user => {
+    await Podcast.updateOne(
+      { _id: Object(req.body.podcast) },
+      { $addToSet: { additionalTags: { $each: parseTags(req.body.query) } } }
+    ).then(result => {
+      return res.status(200).send({
+        result: "Added user interest and podcast tag"
+      });
+    });
+  });
+}

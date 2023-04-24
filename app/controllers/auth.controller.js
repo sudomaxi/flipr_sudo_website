@@ -16,9 +16,8 @@ exports.signup = async (req, res) => {
       req.body.role === "user"
         ? "6444824d675f4345ea95172e"
         : "6444824d675f4345ea95172d",
-    likes: [],
-    watching: [],
     password: bcrypt.hashSync(req.body.password, 8),
+    interests: ['all']
   });
 
   await user

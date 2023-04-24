@@ -11,4 +11,5 @@ module.exports = (app) => {
   });
   app.post("/api/view", controller.markView);
   app.get("/api/views/user/:id", controller.getPodcastsViewedByUser);
+  app.post("/api/view/tag", controller.addTagAndUserInterest);
 };
